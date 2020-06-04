@@ -7,6 +7,7 @@ const app = express();
 
 //Controllers
 const auth = require('./controllers/authController')
+const postCtrl = require('./controllers/post')
 
 //Top level Middleware
 app.use(express.json());
@@ -40,7 +41,7 @@ massive({
     .catch((err) => console.log(err))
 
 //Endpoints
-// app.get('/api/posts')
-// app.post('/api/post')
-// app.put('/api/posts/:post_id')
-// app.delete('/api/posts/:post_id')
+app.get('/api/posts', postCtrl.getPost)
+app.post('/api/post', postCtrl.addPost)
+app.put('/api/posts/:post_id', postCtrl.editPost)
+app.delete('/api/posts/:post_id', postCtrl.deletePost)
