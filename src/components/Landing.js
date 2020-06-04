@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
+import {connect} from 'react-redux';
+import {loginUser} from '../redux/reducer'
 
-export default class Landing extends Component { 
+class Landing extends Component { 
     //input is not good without state
     constructor(){
         super();
@@ -23,6 +25,8 @@ export default class Landing extends Component {
         const { email, password} = this.state
         axios.post('/auth/login', {email,password})
         .then( res => {
+            //redux magic
+            this.props.loginUser(res.data)
             this.props.history.push('/dashboard')
         })
         .catch(err => {
@@ -36,7 +40,7 @@ export default class Landing extends Component {
             <div>
                 <form onSubmit={(e) => this.login(e)}>
                     <input type="text" placeholder="email..." name="email" value={email} onChange={e => this.changeHandler(e)}/>
-                    <input type="password" placeholder="passwword..." name="password" value={password} onChange={e => this.changeHandler(e)}/>
+                    <input type="password" placeholder="password..." name="password" value={password} onChange={e => this.changeHandler(e)}/>
                     <input type="submit" value="Login"/>
                 </form>
                 <span>Don't already have an account? Register here:</span>
@@ -45,3 +49,9 @@ export default class Landing extends Component {
         )
     }
 }
+
+const mapStateToProps = reduxState => reduxState;
+
+const mapDispatchToProps = { loginUser }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Landing)
