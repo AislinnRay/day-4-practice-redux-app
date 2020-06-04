@@ -2,21 +2,28 @@ require('dotenv').config();
 const express = require('express')
 const session = require('express-session')
 const massive = require('massive')
-const {SERVER_PORT, CONNECTION_STRING} = process.env;
+const {SERVER_PORT, CONNECTION_STRING, SESSION_SECRET} = process.env;
 const app = express();
 
 //Controllers
+const auth = require('./controllers/authController')
 
-//Middleware
+//Top level Middleware
 app.use(express.json());
 app.use(
     session({
-      secret: SESSION_SECRET,
       resave: false,
       saveUninitialized: true,
       cookie: { maxAge: 1000 * 60 * 60 * 24 },
+      secret: SESSION_SECRET
     })
   )
+
+//Auth Endpoints
+app.post('/auth/login', auth.login)
+app.post('/auth/register', auth.register)
+app.delete('/auth/logout', auth.logout)
+app.get('/auth/user', auth.getUser)
 
 //Database Connection
 massive({
@@ -33,3 +40,7 @@ massive({
     .catch((err) => console.log(err))
 
 //Endpoints
+// app.get('/api/posts')
+// app.post('/api/post')
+// app.put('/api/posts/:post_id')
+// app.delete('/api/posts/:post_id')
