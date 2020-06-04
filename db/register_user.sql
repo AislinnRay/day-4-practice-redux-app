@@ -1,4 +1,4 @@
-insert into users (email, passwor)
+insert into users (email, password)
 values ($1, $2);
 
 select * from users
