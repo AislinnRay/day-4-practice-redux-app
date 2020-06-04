@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 const initialState = {
     user: {},
     isLoggedIn: false
@@ -21,12 +23,27 @@ export function logoutUser(){
     }
 }
 
+export function getUser(){
+    const user = axios.get('/auth/user')
+
+    return {
+        type: GET_USER,
+        payload: user
+    }
+}
+
 export default function (state = initialState, action){
     switch (action.type) {
         case LOGIN_USER:
             return {...state, user: action.payload, isLoggedIn: true}
         case LOGOUT_USER:
             return {...state, ...action.payload}
+        case GET_USER + '_PENDING':
+            return state
+        case GET_USER + '_FULFILLED':
+            return {...state, user: action.payload.data, isLoggedIn: true};
+        case GET_USER + '_REJECTED':
+            return initialState
         default:
             return initialState
     }
